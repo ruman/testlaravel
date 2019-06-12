@@ -7,6 +7,7 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 
 use Illuminate\HTTP\Request;
+use App\Http\Requests\FormdataRequest;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
@@ -25,15 +26,9 @@ class ProductController extends BaseController
     	return view('productform')->with('listproducts', $listproducts)->with('success', false);
     }
 
-    public function store(Request $request){
+    public function store(FormdataRequest $request){
 
-    	//validation
-    	$request->validate([
-    		'productname'=> 'bail|required|max:255',
-    		'stockquentity'	=>  'required|integer',
-    		'peritemprice'	=>  'required|numeric',
-    	]);
-
+    	
     	$listproducts = [];
     	$product = [
     		'name'	=> $request->input('productname'),
@@ -48,7 +43,7 @@ class ProductController extends BaseController
     	}
     	$listproducts[] = $product;
     	Storage::disk('local')->put('productlist.json', json_encode($listproducts));
-    	$message = 'Product saved';
+    	$message = 'Product Added';
 
     	return redirect('/form')->with('success', $message);
 
